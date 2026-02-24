@@ -10,12 +10,7 @@ NAMES = [
     "Sopheap Vichea",
     "Ratanak Dara",
     "Chenda Vann",
-    "Boknarith Sovan",
-    "វង្ស សេង",
-    "សុភា រដ្ឋា",
-    "ពៅ គន្ធា",
-    "និក មិត្ត",
-    "សុជាតា លីណា",
+    "Boknarith Sovan"
 ]
 
 @app.get("/")
