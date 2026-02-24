@@ -17,15 +17,15 @@ import edge_tts
 
 VOICES_DIR = "voices"
 
-# Names to generate
-NAMES = [
-    "មករា សុធា",
-    "សុភាព វិជ្ជា",
-    "រតនៈ ដារា",
-    "ចន្ទា វ៉ាន់",
-    "បុកនរិទ្ធ សុវណ្ណ",
-    "ហាហាជីដេវីត ម៉ាក់មកយក",
-]
+# Mapping: English filename (without .mp3) → Khmer text to speak
+NAMES = {
+    "makara_sothea":           "មករា សុធា",
+    "sopheap_vichea":          "សុភាព វិជ្ជា",
+    "ratanak_dara":            "រតនៈ ដារា",
+    "chenda_vann":             "ចន្ទា វ៉ាន់",
+    "boknarith_sovan":         "បុកនរិទ្ធ សុវណ្ណ",
+    "haha_chi_devit_mak_mok_yok": "ហាហាជីដេវីត ម៉ាក់មកយក",
+}
 
 # Khmer voices available in edge-tts:
 #   km-KH-PisethNeural  (Male)
@@ -34,21 +34,16 @@ NAMES = [
 VOICE = "km-KH-PisethNeural"
 
 
-def name_to_filename(name: str) -> str:
-    """Convert 'Makara Sothea' → 'makara_sothea.mp3'"""
-    return name.lower().replace(" ", "_") + ".mp3"
-
-
-async def generate_voice(name: str) -> None:
-    filename = name_to_filename(name)
+async def generate_voice(filename_stem: str, text: str) -> None:
+    filename = filename_stem + ".mp3"
     output_path = os.path.join(VOICES_DIR, filename)
 
     if os.path.exists(output_path):
         print(f"[SKIP]  {filename} already exists.")
         return
 
-    print(f"[GEN]   Generating '{name}' → {filename}  (voice: {VOICE})")
-    communicate = edge_tts.Communicate(name, VOICE)
+    print(f"[GEN]   Generating '{text}' → {filename}  (voice: {VOICE})")
+    communicate = edge_tts.Communicate(text, VOICE)
     await communicate.save(output_path)
     print(f"[DONE]  Saved {output_path}")
 
@@ -56,7 +51,7 @@ async def generate_voice(name: str) -> None:
 async def main() -> None:
     os.makedirs(VOICES_DIR, exist_ok=True)
 
-    tasks = [generate_voice(name) for name in NAMES]
+    tasks = [generate_voice(stem, text) for stem, text in NAMES.items()]
     await asyncio.gather(*tasks)
 
     print("\nAll done! Files in voices/:")
