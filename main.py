@@ -1,14 +1,31 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 import os
 
 app = FastAPI()
 
 VOICES_DIR = "voices"
+NAMES = [
+    "Makara Sothea",
+    "Sopheap Vichea",
+    "Ratanak Dara",
+    "Chenda Vann",
+    "Boknarith Sovan",
+    "វង្ស សេង",
+    "សុភា រដ្ឋា",
+    "ពៅ គន្ធា",
+    "និក មិត្ត",
+    "សុជាតា លីណា",
+]
 
 @app.get("/")
 async def root():
     return {"message": "MP3 Server is running"}
+
+@app.get("/names")
+async def get_names():
+    """Return newline-delimited plain text names."""
+    return PlainTextResponse("\n".join(NAMES))
 
 @app.get("/{name}/{filename}")
 async def get_mp3(name: str, filename: str):
